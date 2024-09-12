@@ -88,7 +88,6 @@
             var uri = document.getElementById('url').value
             console.log(uri)
 
-            const formData = new FormData(this);
             var xhr = new XMLHttpRequest();
             xhr.open('POST', uri + '/api/oc', true);
             xhr.onload = function () {
@@ -115,6 +114,7 @@
                     alertBody.classList.remove('d-none')
                     // Tambahkan kode untuk menangani error
                 }
+                xhr.send();
             };
         })
     </script>

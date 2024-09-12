@@ -55,8 +55,8 @@
 
                             <form class="pt-3" method="post">
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-lg" id="url"
-                                        name="url" placeholder="exam.smp..... / 192.168......." style="appearance: none;">
+                                    <input type="text" class="form-control form-control-lg" id="url" name="url"
+                                        placeholder="exam.smp..... / 192.168......." style="appearance: none;">
                                 </div>
                                 <div class="mt-3">
                                     <button type="submit" id="btnSubmit" style="height: 55px;"
@@ -77,9 +77,45 @@
     <!-- endinject -->
 
     <script>
-        document.querySelector('form').addEventListener('submit', function(event){
+        var alertBody = document.getElementById('alertBody')
+        var btnSubmit = document.getElementById('btnSubmit')
+
+        document.querySelector('form').addEventListener('submit', function (event) {
+            btnSubmit.disabled = true;
+            alertBody.classList.add('d-none')
+
             event.preventDefault()
-            
+            var uri = document.getElementById('url').value
+            console.log(uri)
+
+            const formData = new FormData(this);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', uri + '/api/oc', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var result = JSON.parse(xhr.responseText);
+
+                    if (result.err == false) {
+                        localStorage.setItem('uri', uri)
+                        location.href = 'login.html'
+                    } else {
+                        alertBody.innerHTML = 'Ada Gangguan Saat Mengakses Server'
+                        alertBody.classList.remove('d-none')
+                    }
+
+
+                    console.log('Success:', result);
+                    btnSubmit.disabled = false;
+                    // Tambahkan kode untuk menangani respon berhasil
+                } else {
+                    console.error('Error:', xhr.statusText);
+                    btnSubmit.disabled = false;
+
+                    alertBody.innerHTML = 'Tidak terhubung ke server ('+xhr.statusText+')'
+                    alertBody.classList.remove('d-none')
+                    // Tambahkan kode untuk menangani error
+                }
+            };
         })
     </script>
 

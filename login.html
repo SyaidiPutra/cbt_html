@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login</title>
+    <!-- plugins:css -->
+    <!-- <link rel="stylesheet" href="/vendors/feather/feather.css"> -->
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+    <!-- <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/typicons/typicons.css"> -->
+    <!-- <link rel="stylesheet" href="/vendors/simple-line-icons/css/simple-line-icons.css"> -->
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="css/vertical-layout-light/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <noscript>
+        <p>Anda harus mengaktifkan JavaScript untuk menggunakan aplikasi ini.</p>
+    </noscript>
+    <script>
+    if (document.cookie.includes('key')) {
+        window.location.href = 'quiz/info.html';
+    }
+    </script>
+</head>
+
+<body>
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="content-wrapper d-flex align-items-center auth px-0">
+                <div class="row w-100 mx-0">
+                    <div class="col-lg-4 mx-auto">
+                        <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                            <div class="d-flex align-content-center align-self-center align-items-center brand-logo">
+                                <img src="https://smpn4paringin.sch.id/wp-content/uploads/2022/07/logo-removebg-preview-210x300.png"
+                                    style="width: 3rem;">
+                                <div class="ps-3">
+                                    <div>
+                                        <img src="images/banner.png" alt="logo">
+                                        <small>Client</small>
+                                    </div>
+                                    <h3 class="m-0">SMPN 4 Paringin</h3>
+                                </div>
+                            </div>
+                            <h4>Hai, Peserta</h4>
+                            <h6 class="fw-light">Login untuk melanjutkan.</h6>
+
+                            <div id="alertBody" class="alert alert-warning d-none" role="alert">
+                                <!-- bagian alert -->
+                            </div>
+
+                            <form class="pt-3" method="post">
+                                <div class="form-group">
+                                    <input type="number" class="form-control form-control-lg" id="username"
+                                        name="username" placeholder="No Peserta Ujian" style="appearance: none;"
+                                        inputmode="numeric">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control form-control-lg" id="password"
+                                        name="password" placeholder="Password">
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" id="btnSubmit" style="height: 55px;"
+                                        class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">Masuk</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+
+    <script>
+
+        var alertBody = document.getElementById('alertBody')
+        var btnSubmit = document.getElementById('btnSubmit')
+
+        document.querySelector('form').addEventListener('submit', function (event) {
+            btnSubmit.disabled = true;
+            alertBody.classList.add('d-none')
+
+            event.preventDefault();
+            const formData = new FormData(this);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://cbt.smpn4paringin.sch.id/api/ot', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var result = JSON.parse(xhr.responseText);
+                    switch (result.errCd) {
+                        case 1:
+                            alertBody.innerHTML = 'No Peserta tidak ditemukan'
+                            alertBody.classList.remove('d-none')
+                            console.log('error 1')
+                            break;
+                        case 2:
+                            alertBody.innerHTML = 'Kombinasi Password dan No Peserta Salah'
+                            alertBody.classList.remove('d-none')
+                            console.log('error 2')
+                            break;
+                        case 3:
+                            alertBody.innerHTML = 'No Peserta tidak dapat dijangkau'
+                            alertBody.classList.remove('d-none')
+                            console.log('error 3')
+                            break;
+
+                        default:
+
+                            break;
+                    }
+
+                    if(result.err == false){
+                        var date = new Date();
+                        date.setTime(date.getTime() + (2 * 60 * 60 * 1000));
+                        document.cookie = "key=" + result.key + "; expires=" + date.toUTCString();
+
+                        location.href = 'quiz/info.html'
+                    }
+
+                    
+
+                    console.log('Success:', result);
+                    btnSubmit.disabled = false;
+                    // Tambahkan kode untuk menangani respon berhasil
+                } else {
+                    console.error('Error:', xhr.statusText);
+                    btnSubmit.disabled = false;
+                    // Tambahkan kode untuk menangani error
+                }
+            };
+            xhr.send(formData);
+
+        });
+    </script>
+
+</body>
+
+</html>

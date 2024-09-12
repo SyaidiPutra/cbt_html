@@ -27,6 +27,9 @@
     if (document.cookie.includes('key')) {
         window.location.href = 'quiz/info.html';
     }
+    if(!localStorage.getItem('url')){
+            window.location.href = 'index.html';
+    }
     </script>
 </head>
 

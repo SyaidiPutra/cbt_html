@@ -24,7 +24,9 @@
         <p>Anda harus mengaktifkan JavaScript untuk menggunakan aplikasi ini.</p>
     </noscript>
     <script>
-
+        if(localStorage.getItem('url')){
+            window.location.href = 'login.html';
+        }
     </script>
 </head>
 
@@ -100,6 +102,7 @@
 
 
                     if(result.err == false){
+                        localStorage.setItem('host', uri)
                         location.href = 'login.html'
                     }
 
@@ -111,6 +114,8 @@
                 } else {
                     console.error('Error:', xhr.statusText);
                     btnSubmit.disabled = false;
+                    alertBody.innerHTML = 'Terjadi kegagalan koneksi : ' + xhr.statusText
+                    alertBody.classList.remove('d-none')
                     // Tambahkan kode untuk menangani error
                 }
             };
